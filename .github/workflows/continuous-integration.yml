@@ -43,4 +43,4 @@ jobs:
           npm run build
       - name: Publish PR Package
         run: |
-          npm publish -ws --tag=${VERSION}
+          npm publish -ws --tag=${VERSION} --registry=https://npm.pkg.github.com

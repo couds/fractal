@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "description": "",
   "bin": {
-    "fractal": "./src/index.js"
+    "fractal": "src/index.js"
   },
   "main": "index.js",
   "scripts": {
     "deploy": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/couds/fractal.git"
   },
   "keywords": [],
   "author": "",

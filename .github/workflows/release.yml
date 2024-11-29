@@ -93,14 +93,14 @@ jobs:
           echo "::set-output name=version::$(echo $(git describe))"
       - name: Build
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
           NODE_ENV=production npm run build
       - name: Deploy packages
         if: ${{ needs.setup.outputs.updateType }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           npm publish -ws
       - name: Push changes
         uses: ad-m/github-push-action@master
