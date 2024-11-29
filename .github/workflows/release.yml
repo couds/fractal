@@ -106,7 +106,7 @@ jobs:
         uses: ad-m/github-push-action@master
         if: ${{ needs.setup.outputs.updateType }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PUSH_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
           atomic: true
