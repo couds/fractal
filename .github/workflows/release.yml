@@ -101,7 +101,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish -ws
+          npm publish -ws --access public --provenance
       - name: Push changes
         uses: ad-m/github-push-action@master
         if: ${{ needs.setup.outputs.updateType }}
