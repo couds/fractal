@@ -34,7 +34,7 @@ jobs:
             ["fractal-core", "fractal-cli", "fractal-react"]
       - name: Generate pr version
         run: |
-          npm version prerelease --preid=${{ env.VERSION }} --no-git-tag-version -ws --include-workspace-root
+          npm version prerelease --preid=${{ env.VERSION }} --no-git-tag-version
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
