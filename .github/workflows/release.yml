@@ -1,0 +1,121 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Specify type of bump you want to do'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prepatch
+          - preminor
+          - premajor
+          - prerelease
+      preid:
+        description: 'If the release type is a new prerelease, the id of the prerelease ex: RC for a Release Candidate, once you set the preid do not add it again'
+      version:
+        description: 'If you want to release an exact version, do not use this unless its extrictly neccesary'
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        uses: couds/github-actions/actions/npm-install@master
+      - name: Setup base
+        id: parse
+        uses: couds/github-actions/actions/parse-info@master
+    outputs:
+      updateType: ${{ inputs.version || inputs.type || steps.parse.outputs.updateType }}
+  test:
+    runs-on: ubuntu-latest
+    name: Tests
+    needs: [setup]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: couds/github-actions/actions/npm-install@master
+      - name: Run Test
+        run: |
+          echo "Run test"
+  linter:
+    runs-on: ubuntu-latest
+    name: Lint
+    needs: [setup]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: couds/github-actions/actions/npm-install@master
+      - name: Run Linter
+        run: |
+          echo "Run Linter"
+  release:
+    runs-on: ubuntu-latest
+    name: Publish
+    needs: [setup, linter, test]
+    if: ${{ needs.setup.outputs.updateType }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Install dependencies
+        uses: couds/github-actions/actions/npm-install@master
+      - name: 'Generate new version'
+        id: updatedVersion
+        if: ${{ needs.setup.outputs.updateType }}
+        env:
+          TYPE: ${{ needs.setup.outputs.updateType }}
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          npm version $(echo ${TYPE}) -ws --include-workspace-root --preid="${{ inputs.preid }}" -m "v%s - [skip ci]"
+          echo "::set-output name=version::$(echo $(git describe))"
+      - name: Build
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
+          NODE_ENV=production npm run build
+      - name: Deploy packages
+        if: ${{ needs.setup.outputs.updateType }}
+        run: |
+          npm publish -ws
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        if: ${{ needs.setup.outputs.updateType }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true
+          atomic: true
+      - name: Generate Release
+        uses: octokit/request-action@v2.x
+        if: ${{ needs.setup.outputs.updateType }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: POST /repos/${{ github.repository }}/releases
+          tag_name: ${{ steps.updatedVersion.outputs.version }}
+          generate_release_notes: true

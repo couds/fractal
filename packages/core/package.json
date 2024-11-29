@@ -1,0 +1,51 @@
+{
+  "name": "@couds/fractal-core",
+  "version": "0.0.0",
+  "description": "",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "perbuild": "rm -rf lib",
+    "build": "swc ./src/* -d lib --strip-leading-paths",
+    "postbuild": "cp ./src/index.d.ts ./lib/",
+    "predeploy": "npm run build",
+    "deploy": "npm publish"
+  },
+  "publishConfig": {
+    "@local:registry": "http://localhost:4873/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gdm-ui/fractal.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./*": {
+      "types": "./lib/*/index.d.ts",
+      "default": "./lib/*/index.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">= 18.0.0",
+    "react-dom": ">= 18.0.0"
+  },
+  "devDependencies": {
+    "@swc/cli": "0.5.1",
+    "@swc/core": "1.9.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "optionalDependencies": {
+    "@couds/eslint-config": "*",
+    "eslint": "^8"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "fractal",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "turbo build",
+    "clean": "turbo clean",
+    "format": "turbo format",
+    "version": "npm version $npm_package_version -ws && git add ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/couds/fractal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/couds/fractal/issues"
+  },
+  "homepage": "https://github.com/couds/fractal#readme",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "turbo": "2.3.3"
+  },
+  "packageManager": "npm@10.8.2"
+}

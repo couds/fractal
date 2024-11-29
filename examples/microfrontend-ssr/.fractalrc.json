@@ -1,0 +1,7 @@
+{
+  "entry": {
+    "client": "./src/client.js",
+    "server": "./src/server.js"
+  },
+  "output": "./dist"
+}

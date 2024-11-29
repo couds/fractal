@@ -1,0 +1,46 @@
+name: Continuous Integration
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+    env:
+      VERSION: ${{ format('pr-{0}', github.event.number) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        uses: couds/github-actions/actions/npm-install@master
+      - name: Remove packages
+        uses: couds/github-actions/actions/remove-npm-package@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ env.VERSION }}
+          packages: |
+            ["fractal-core", "fractal-cli", "fractal-react"]
+      - name: Generate pr version
+        run: |
+          npm version prerelease --preid=${{ env.VERSION }} --no-git-tag-version -ws --include-workspace-root
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
+          npm run build
+      - name: Publish PR Package
+        run: |
+          npm publish -ws --tag=${VERSION}

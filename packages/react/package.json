@@ -1,0 +1,44 @@
+{
+  "name": "@couds/fractal-react",
+  "version": "0.0.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "description": "",
+  "scripts": {
+    "perbuild": "rm -rf lib",
+    "build": "swc ./src/* -d lib --strip-leading-paths",
+    "postbuild": "cp ./src/index.d.ts ./lib/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gdm-ui/fractal.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./*": {
+      "types": "./lib/*/index.d.ts",
+      "default": "./lib/*/index.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">= 18.0.0",
+    "react-dom": ">= 18.0.0"
+  },
+  "devDependencies": {
+    "@swc/cli": "0.5.1",
+    "@swc/core": "1.9.3",
+    "@couds/eslint-config": "*",
+    "babel-plugin-transform-react-remove-prop-types": "0.4.24",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}
