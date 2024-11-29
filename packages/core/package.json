@@ -2,6 +2,7 @@
   "name": "@couds/fractal-core",
   "version": "0.0.0",
   "description": "",
+  "private": false,
   "files": [
     "lib"
   ],
@@ -31,7 +32,6 @@
       "default": "./lib/*/index.js"
     }
   },
-  "private": "false",
   "keywords": [],
   "author": "",
   "license": "ISC",
