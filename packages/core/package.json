@@ -31,6 +31,7 @@
       "default": "./lib/*/index.js"
     }
   },
+  "private": "false",
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -6,6 +6,7 @@
   "files": [
     "lib"
   ],
+  "private": "false",
   "description": "",
   "scripts": {
     "perbuild": "rm -rf lib",

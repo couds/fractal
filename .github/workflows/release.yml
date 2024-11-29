@@ -89,7 +89,7 @@ jobs:
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          npm version $(echo ${TYPE}) -ws --include-workspace-root --preid="${{ inputs.preid }}" -m "v%s - [skip ci]"
+          npm version $(echo ${TYPE}) --preid="${{ inputs.preid }}" -m "v%s - [skip ci]"
           echo "::set-output name=version::$(echo $(git describe))"
       - name: Build
         shell: bash

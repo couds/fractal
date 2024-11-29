@@ -5,6 +5,7 @@
   "bin": {
     "fractal": "src/index.js"
   },
+  "private": "false",
   "main": "index.js",
   "scripts": {
     "deploy": "npm publish"
