@@ -14,7 +14,7 @@ module.exports = async ({ pwd, output, client, server, shared, name, webpack }) 
         const clientWebpack = Webpack(
           webpack(
             merge(
-              commonConfig(),
+              commonConfig({ name }),
               clientConfig({
                 name,
                 context: pwd,
@@ -48,7 +48,7 @@ module.exports = async ({ pwd, output, client, server, shared, name, webpack }) 
       const clientWebpack = Webpack(
         webpack(
           merge(
-            commonConfig(),
+            commonConfig({ name }),
             serverConfig({
               name,
               context: pwd,

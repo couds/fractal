@@ -33,7 +33,7 @@ const fractal = (Component, { name }) => {
       return methods;
     }
     const ready = () => {
-      container.dispatchEvent(new CustomEvent('mf-ready', { detail: methods }));
+      container.dispatchEvent(new CustomEvent('fractal-ready', { detail: methods }));
     };
 
     const HoCComponent = () => {
@@ -70,7 +70,7 @@ const fractal = (Component, { name }) => {
   factory.Component = Component;
   window._FRACTAL[id] = factory;
 
-  window.dispatchEvent(new CustomEvent(`mf-${id}`, { detail: { run: window._FRACTAL[id] } }));
+  window.dispatchEvent(new CustomEvent(`fractal-${id}`, { detail: { run: window._FRACTAL[id] } }));
 };
 
 export default fractal;
