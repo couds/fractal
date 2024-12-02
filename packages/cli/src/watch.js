@@ -11,7 +11,7 @@ const start = ({ output, client, server, shared, pwd, name, webpack }, params) =
   if (server) {
     const webpackServer = webpack(
       merge(
-        commonConfig(),
+        commonConfig({ name }),
         serverConfig({
           name,
           context: pwd,
@@ -64,7 +64,7 @@ const start = ({ output, client, server, shared, pwd, name, webpack }, params) =
 
   const webpackClientlient = webpack(
     merge(
-      commonConfig(),
+      commonConfig({ name }),
       clientConfig({
         includeReact: params.every((x) => {
           return x.toLowerCase() !== '--frameworkless';

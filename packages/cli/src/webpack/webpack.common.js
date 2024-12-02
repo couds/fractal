@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-module.exports = () => {
+module.exports = ({ name }) => {
   const babelLoader = {
     loader: 'babel-loader',
     options: {
@@ -13,6 +13,7 @@ module.exports = () => {
             runtime: 'automatic',
           },
         ],
+        ['@babel/preset-typescript'],
       ],
       plugins: ['babel-plugin-macros'],
     },
@@ -23,23 +24,7 @@ module.exports = () => {
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
-          use: [
-            babelLoader,
-            {
-              loader: 'ts-loader',
-              options: {
-                compilerOptions: {
-                  noEmit: false,
-                },
-                transpileOnly: true,
-              },
-            },
-          ],
-        },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
+          test: /\.(t|j)sx?$/,
           use: [babelLoader],
         },
         {
@@ -50,8 +35,8 @@ module.exports = () => {
     },
     externals: {},
     plugins: [
-      new webpack.ProvidePlugin({
-        process: 'process/browser',
+      new webpack.DefinePlugin({
+        'process.env.FRACTAL_NAME': JSON.stringify(name),
       }),
     ],
     resolve: {

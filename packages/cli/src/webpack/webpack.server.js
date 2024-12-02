@@ -1,7 +1,6 @@
 const path = require('path');
-const webpack = require('webpack');
 
-module.exports = ({ entry, outputDir, context, name } = {}) => {
+module.exports = ({ entry, outputDir, context } = {}) => {
   return {
     context,
     node: {
@@ -20,13 +19,13 @@ module.exports = ({ entry, outputDir, context, name } = {}) => {
           test: /\.css$/i,
           use: ['null-loader'],
         },
+        {
+          test: /\.(woff2|png|jpg|gif|ttf)$/,
+          use: ['null-loader'],
+        },
       ],
     },
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env.MF_NAME': JSON.stringify(name),
-      }),
-    ],
+    plugins: [],
     resolve: {},
     externals: {},
   };

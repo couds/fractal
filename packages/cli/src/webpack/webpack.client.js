@@ -23,9 +23,6 @@ module.exports = ({ includeReact = false, entry, outputDir, shared = {}, context
       new MiniCssExtractPlugin({
         filename: `${name}.css`,
       }),
-      new webpack.DefinePlugin({
-        'process.env.MF_NAME': JSON.stringify(pkgName),
-      }),
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),
@@ -36,6 +33,10 @@ module.exports = ({ includeReact = false, entry, outputDir, shared = {}, context
           test: /\.css$/i,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
           sideEffects: true,
+        },
+        {
+          test: /\.(woff2|png|jpg|gif|ttf)$/,
+          type: 'asset/resource',
         },
       ],
     },
