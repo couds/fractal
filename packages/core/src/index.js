@@ -28,43 +28,45 @@ const fractal = (Component, { name }) => {
         container.dispatchEvent(new CustomEvent('update', { detail }));
       },
     };
+    return new Promise((resolve) => {
+      const ready = () => {
+        container.dispatchEvent(new CustomEvent('fractal-ready', { detail: methods }));
+        resolve(methods);
+      };
+      if (container.dataset.mfLoaded) {
+        ready();
+        return;
+      }
 
-    if (container.dataset.mfLoaded) {
-      return methods;
-    }
-    const ready = () => {
-      container.dispatchEvent(new CustomEvent('fractal-ready', { detail: methods }));
-    };
+      const HoCComponent = () => {
+        const [props, setProps] = useState(initialState);
+        const ref = useRef(container);
+        useEffect(() => {
+          // eslint-disable-next-line no-param-reassign
+          container.dataset.mfLoaded = true;
+          const updateProps = ({ detail }) => {
+            setProps(detail);
+          };
+          container.addEventListener('update', updateProps);
+          ready();
+          return () => {
+            container.removeEventListener('update', updateProps);
+          };
+        }, []);
+        return <Component {...props} root={ref} />;
+      };
+      HoCComponent.displayName = `fractal(${Component.displayName || Component.name || 'Component'})`;
 
-    const HoCComponent = () => {
-      const [props, setProps] = useState(initialState);
-      const ref = useRef(container);
-      useEffect(() => {
-        const updateProps = ({ detail }) => {
-          setProps(detail);
-        };
-        container.addEventListener('update', updateProps);
-        return () => {
-          container.removeEventListener('update', updateProps);
-        };
-      }, []);
-      return <Component {...props} root={ref} />;
-    };
-    HoCComponent.displayName = `fractal(${Component.displayName || Component.name || 'Component'})`;
+      const hasSSR = !!container.innerHTML;
 
-    const hasSSR = !!container.innerHTML;
-
-    // TODO: Check react version  root >= 18 to use and for < 18 render/hydratate
-    if (!hasSSR) {
-      const root = ReactDOM.createRoot(container);
-      root.render(<HoCComponent />);
-    } else {
-      ReactDOM.hydrateRoot(container, <HoCComponent />);
-    }
-    // eslint-disable-next-line no-param-reassign
-    container.dataset.mfLoaded = true;
-    ready();
-    return methods;
+      // TODO: Check react version  root >= 18 to use and for < 18 render/hydratate
+      if (!hasSSR) {
+        const root = ReactDOM.createRoot(container);
+        root.render(<HoCComponent />);
+      } else {
+        ReactDOM.hydrateRoot(container, <HoCComponent />);
+      }
+    });
   };
 
   factory.Component = Component;

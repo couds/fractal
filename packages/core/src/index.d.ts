@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { fractalComponentType } from '../react';
 declare global {
   interface Window {
     _FRACTAL: Record<string, {
       Component: any;
-    } & (({ container: HTMLElement, initialState: Object }) => fractalComponentType)>;
+    } & (({ container: HTMLElement, initialState: Object }) => Promise<{ container: HTMLElement; update: (props: any) => any; name: string }>)>;
   }
 }
 
