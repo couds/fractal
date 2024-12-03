@@ -78,6 +78,10 @@ const start = ({ output, client, server, shared, pwd, name, webpack }, params) =
     ),
   );
   const clientCompiler = webpackBuilder(webpackClientlient);
+  clientCompiler.hooks.beforeCompile.tap('watcher', () => {
+    process.stdout.write('\x1bc');
+    console.log('Transpiling...');
+  });
 
   clientCompiler.watch(
     {
@@ -86,7 +90,8 @@ const start = ({ output, client, server, shared, pwd, name, webpack }, params) =
       poll: undefined,
     },
     (err) => {
-      console.log('Watching client');
+      process.stdout.write('\x1bc');
+      console.log('Transpile complete');
       if (err) {
         console.error(err);
       }
